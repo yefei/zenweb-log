@@ -6,7 +6,7 @@ const pino = require('pino');
  * 初始化 logger
  * @returns {pino.Logger}
  */
-function initLogger() {
+function initLogger(options) {
   let logdest;
   if (process.env.LOG_FILE) {
     logdest = pino.destination(process.env.LOG_FILE);
@@ -15,7 +15,7 @@ function initLogger() {
       logdest.reopen();
     });
   }
-  return pino(logdest);
+  return pino(options, logdest);
 }
 
 /**
@@ -52,7 +52,12 @@ function setupAppLogger(app, logger) {
  * @param {*} [options]
  */
 function setup(core, options) {
-  const logger = initLogger();
+  options = Object.assign({
+    prettyPrint: process.env.NODE_ENV === 'development' ? {
+      translateTime: true,
+    } : null,
+  }, options);
+  const logger = initLogger(options);
   setupAppLogger(core.koa, logger);
   core.log = logger;
   core.defineContextCacheProperty('log', ctx => contextLogger(logger, ctx));
