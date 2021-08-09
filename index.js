@@ -1,5 +1,6 @@
 'use strict';
 
+const os = require('os');
 const pino = require('pino');
 
 /**
@@ -53,6 +54,7 @@ function setupAppLogger(app, logger) {
  */
 function setup(core, options) {
   options = Object.assign({
+    name: process.env.npm_package_name || os.hostname(),
     prettyPrint: process.env.NODE_ENV === 'development' ? {
       translateTime: true,
     } : null,
