@@ -1,26 +1,40 @@
 'use strict';
 
 const os = require('os');
-const pino = require('pino');
+const winston = require('winston');
 
 /**
  * 初始化 logger
- * @returns {pino.Logger}
+ * @returns {winston.Logger}
  */
 function initLogger(options) {
-  let logdest;
-  if (process.env.LOG_FILE) {
-    logdest = pino.destination(process.env.LOG_FILE);
-    process.on('SIGHUP', () => {
-      console.log('reopen log file');
-      logdest.reopen();
-    });
+  const logger = winston.createLogger({
+    defaultMeta: {
+      name: options.name,
+    },
+    level: 'info',
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.json(),
+    ),
+    transports: [
+      new winston.transports.Console({
+        format: winston.format.printf(info => {
+          return `${info.level.toUpperCase()} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.url : '' }: ${info.message}`;
+        })
+      }),
+    ],
+  });
+
+  if (options.file) {
+    logger.add(new winston.transports.File({ filename: options.file }));
   }
-  return pino(options, logdest);
+
+  return logger;
 }
 
 /**
- * @param {pino.Logger} logger
+ * @param {winston.Logger} logger
  * @param {import('koa').Context} ctx
  */
 function contextLogger(logger, ctx) {
@@ -35,7 +49,7 @@ function contextLogger(logger, ctx) {
 /**
  * 记录应用错误日志
  * @param {import('koa')} app 
- * @param {pino.Logger} logger
+ * @param {winston.Logger} logger
  */
 function setupAppLogger(app, logger) {
   app.on('error', (err, ctx) => {
@@ -55,9 +69,7 @@ function setupAppLogger(app, logger) {
 function setup(core, options) {
   options = Object.assign({
     name: process.env.npm_package_name || os.hostname(),
-    prettyPrint: process.env.NODE_ENV === 'development' ? {
-      translateTime: true,
-    } : null,
+    file: process.env.LOG_FILE,
   }, options);
   const logger = initLogger(options);
   setupAppLogger(core.koa, logger);
