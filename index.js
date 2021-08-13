@@ -1,7 +1,9 @@
 'use strict';
 
 const os = require('os');
+const path = require('path');
 const winston = require('winston');
+require('winston-daily-rotate-file');
 
 /**
  * 初始化 logger
@@ -19,15 +21,22 @@ function initLogger(options) {
     ),
     transports: [
       new winston.transports.Console({
-        format: winston.format.printf(info => {
-          return `${info.level.toUpperCase()} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.url : '' }: ${info.message}`;
-        })
+        format: winston.format.combine(
+          winston.format.colorize({ all: true }),
+          winston.format.ms(),
+          winston.format.printf(info => {
+            return `[${info.level} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.url : '' }] ${info.message} ${info.ms}`;
+          }),
+        )
       }),
     ],
   });
 
-  if (options.file) {
-    logger.add(new winston.transports.File({ filename: options.file }));
+  if (options.dir) {
+    logger.add(new winston.transports.DailyRotateFile({
+      filename: path.join(options.dir, 'app-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+    }));
   }
 
   return logger;
@@ -69,7 +78,7 @@ function setupAppLogger(app, logger) {
 function setup(core, options) {
   options = Object.assign({
     name: process.env.npm_package_name || os.hostname(),
-    file: process.env.LOG_FILE,
+    dir: process.env.LOG_DIR,
   }, options);
   const logger = initLogger(options);
   setupAppLogger(core.koa, logger);

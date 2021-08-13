@@ -1,15 +1,15 @@
 import 'koa';
 import '@zenweb/core';
-import * as pino from 'pino';
+import { Logger } from 'winston';
 
 declare module '@zenweb/core' {
   interface Core {
-    log: pino.Logger;
+    log: Logger;
   }
 }
 
 declare module 'koa' {
   interface BaseContext {
-    log: pino.Logger;
+    log: Logger;
   }
 }
