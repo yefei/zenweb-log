@@ -10,7 +10,7 @@ app.setup('@zenweb/router');
 
 app.boot().then(() => {
   app.router.get('/', ctx => {
-    ctx.log.info('infoaa');
+    ctx.log.info('infoaa %d %s', 111, {aaa:11122});
     ctx.body = 'aaaa';
   });
   app.listen();

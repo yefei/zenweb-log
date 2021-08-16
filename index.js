@@ -5,6 +5,17 @@ const path = require('path');
 const winston = require('winston');
 require('winston-daily-rotate-file');
 
+const devTransport = winston.format.combine(
+  winston.format.colorize({ all: true }),
+  winston.format.printf(info => {
+    return `[${info.level} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.url : '' }] ${info.message}`;
+  }),
+);
+
+const prodTransport = winston.format.printf(info => {
+  return `[${info.level} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.host + info.url : '' }] ${info.message}`;
+});
+
 /**
  * 初始化 logger
  * @returns {winston.Logger}
@@ -17,17 +28,12 @@ function initLogger(options) {
     level: 'info',
     format: winston.format.combine(
       winston.format.timestamp(),
+      winston.format.splat(),
       winston.format.json(),
     ),
     transports: [
       new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.colorize({ all: true }),
-          winston.format.ms(),
-          winston.format.printf(info => {
-            return `[${info.level} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.url : '' }] ${info.message} ${info.ms}`;
-          }),
-        )
+        format: process.env.NODE_ENV === 'production' ? prodTransport : devTransport,
       }),
     ],
   });
