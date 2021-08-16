@@ -23,7 +23,7 @@ const prodTransport = winston.format.printf(info => {
 function initLogger(options) {
   const logger = winston.createLogger({
     defaultMeta: {
-      name: options.name,
+      app: options.app,
     },
     level: 'info',
     format: winston.format.combine(
@@ -40,7 +40,7 @@ function initLogger(options) {
 
   if (options.dir) {
     logger.add(new winston.transports.DailyRotateFile({
-      filename: path.join(options.dir, 'app-%DATE%.log'),
+      filename: path.join(options.dir, 'app.%DATE%.log'),
       datePattern: 'YYYY-MM-DD',
     }));
   }
@@ -83,7 +83,7 @@ function setupAppLogger(app, logger) {
  */
 function setup(core, options) {
   options = Object.assign({
-    name: process.env.npm_package_name || os.hostname(),
+    app: process.env.npm_package_name || os.hostname(),
     dir: process.env.LOG_DIR,
   }, options);
   const logger = initLogger(options);
