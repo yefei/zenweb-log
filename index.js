@@ -8,12 +8,12 @@ require('winston-daily-rotate-file');
 const devTransport = winston.format.combine(
   winston.format.colorize({ all: true }),
   winston.format.printf(info => {
-    return `[${info.level} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.url : '' }] ${info.message}`;
+    return `[${info.level} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.url : '' }] ${info.message}${info.stack ? '\n  ' + info.stack : ''}`;
   }),
 );
 
 const prodTransport = winston.format.printf(info => {
-  return `[${info.level} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.host + info.url : '' }] ${info.message}`;
+  return `[${info.level} ${info.timestamp}${ info.method ? ' ' + info.method + ' ' + info.host + info.url : '' }] ${info.message}${info.stack ? '\n  ' + info.stack : ''}`;
 });
 
 /**
@@ -67,6 +67,10 @@ function contextLogger(logger, ctx) {
  * @param {winston.Logger} logger
  */
 function setupAppLogger(app, logger) {
+  process.on('unhandledRejection', reason => {
+    logger.error('unhandledRejection: %s', reason.message, { stack: reason.stack });
+  });
+
   app.on('error', (err, ctx) => {
     if (err.expose) return;
     if (ctx) {
