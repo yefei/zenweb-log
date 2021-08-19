@@ -1,6 +1,6 @@
 import 'koa';
 import '@zenweb/core';
-import { Logger } from 'winston';
+import * as Logger from 'bunyan';
 
 declare module '@zenweb/core' {
   interface Core {
