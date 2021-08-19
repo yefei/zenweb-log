@@ -14,7 +14,7 @@ async function asyncerr() {
 
 app.boot().then(() => {
   app.router.get('/', ctx => {
-    ctx.log.info('infoaa %d %s', 111, {aaa:11122});
+    ctx.log.info('infoaa', 111, {aaa:11122});
     ctx.body = 'aaaa';
   });
   app.router.get('/err', ctx => {
