@@ -5,6 +5,7 @@ const app = module.exports = new Core();
 
 app.setup(require('..').setup, {
   dir: __dirname,
+  name: 'testapp',
 });
 app.setup('@zenweb/router');
 
@@ -23,6 +24,10 @@ app.boot().then(() => {
   app.router.get('/asyncerr', ctx => {
     asyncerr();
     ctx.body = 'asyncerr';
+  });
+  app.router.get('/child', ctx => {
+    ctx.log.child({ test: 'child', ip: '111111' }).debug('debug msg: %s', 111, 'append');
+    ctx.body = 'child';
   });
   app.listen();
 });
