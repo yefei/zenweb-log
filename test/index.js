@@ -1,10 +1,10 @@
-'use strict';
+import { Core } from '@zenweb/core';
+import { setup } from '../index.js';
 
-const { Core } = require('@zenweb/core');
-const app = module.exports = new Core();
+const app = new Core();
 
-app.setup(require('..').setup, {
-  dir: __dirname,
+app.setup(setup, {
+  dir: process.cwd(),
   name: 'testapp',
 });
 app.setup('@zenweb/router');

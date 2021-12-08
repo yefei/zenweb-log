@@ -1,5 +1,3 @@
-import 'koa';
-import '@zenweb/core';
 import { Logger } from 'zenlog.js';
 
 declare module '@zenweb/core' {

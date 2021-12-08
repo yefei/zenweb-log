@@ -1,8 +1,17 @@
 {
   "name": "@zenweb/log",
-  "version": "1.6.0",
+  "version": "2.0.0",
   "description": "Zenweb Log module",
-  "main": "index.js",
+  "type": "module",
+  "exports": "./index.js",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "typings": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -26,12 +35,12 @@
     "url": "https://github.com/yefei/zenweb-log/issues"
   },
   "devDependencies": {
-    "@zenweb/core": "^1.2.1",
+    "@zenweb/core": "^2.0.1",
     "@zenweb/router": "^1.1.2",
     "eslint": "^7.16.0",
     "koa": "^2.13.1"
   },
   "dependencies": {
-    "zenlog.js": "^1.0.2"
+    "zenlog.js": "^1.2.0"
   }
 }

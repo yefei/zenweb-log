@@ -1,13 +1,10 @@
-'use strict';
-
-const { createLogger, FileBufferStream } = require('zenlog.js');
+import { createLogger, FileBufferStream } from 'zenlog.js';
 
 /**
  * 初始化 logger
- * @param {import('koa')} app
  * @returns {import('zenlog.js').Logger}
  */
-function initLogger(app, options) {
+function initLogger(options) {
   const fields = {};
   if (options.name) fields.name = options.name;
   const logger = createLogger(fields);
@@ -54,17 +51,13 @@ function setupAppLogger(app, logger) {
  * @param {import('@zenweb/core').Core} core 
  * @param {*} [options]
  */
-function setup(core, options) {
+export function setup(core, options) {
   options = Object.assign({
     name: process.env.npm_package_name,
     dir: process.env.LOG_DIR,
   }, options);
-  const logger = initLogger(core.koa, options);
+  const logger = initLogger(options);
   setupAppLogger(core.koa, logger);
   core.log = logger;
   core.defineContextCacheProperty('log', ctx => contextLogger(logger, ctx));
 }
-
-module.exports = {
-  setup,
-};
