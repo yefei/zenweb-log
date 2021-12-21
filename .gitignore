@@ -12,3 +12,4 @@ run/
 *.un~
 .npmrc
 *.log
+dist/
