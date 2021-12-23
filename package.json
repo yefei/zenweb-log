@@ -1,6 +1,6 @@
 {
   "name": "@zenweb/log",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Zenweb Log module",
   "exports": "./dist/index.js",
   "typings": "./dist/index.d.ts",
