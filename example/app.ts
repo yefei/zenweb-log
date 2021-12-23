@@ -1,13 +1,14 @@
 import { Core } from '@zenweb/core';
-import { setup } from '../index.js';
+import router from '@zenweb/router';
+import log from '../src/index';
 
 const app = new Core();
 
-app.setup(setup, {
+app.setup(log({
   dir: process.cwd(),
   name: 'testapp',
-});
-app.setup('@zenweb/router');
+}));
+app.setup(router());
 
 async function asyncerr() {
   throw new Error('asyncError');
