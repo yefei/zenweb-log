@@ -1,5 +1,6 @@
 import { SetupFunction } from '@zenweb/core';
 import { createLogger, FileBufferStream, Logger, FileBufferStreamOption } from 'zenlog.js';
+export { Logger };
 
 export interface LogOption extends FileBufferStreamOption {
   name?: string;
